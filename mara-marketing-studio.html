@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mara — Marketing Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9E1D4;        /* warm sand base */
+    --surface:#FBF8F2;      /* near-white card */
+    --ink:#16130E;          /* deep warm black */
+    --ink-soft:#6A6053;     /* muted text */
+    --coral:#FF4A28;        /* riso vermilion — energy / CTA */
+    --cobalt:#26367F;       /* riso ink blue — the strategist */
+    --cobalt-wash:#E4E7F2;  /* pale cobalt for chips */
+    --coral-wash:#FBE3DB;   /* pale coral */
+    --line:#D6CBB9;         /* hairline */
+    --good:#1F7A4D;
+    --radius:16px;
+    --shadow:0 1px 0 rgba(22,19,14,.04), 0 10px 30px -18px rgba(22,19,14,.35);
+    --tap:46px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:16px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .app{max-width:560px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    position:sticky;top:0;z-index:20;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:saturate(1.4) blur(10px);
+    -webkit-backdrop-filter:saturate(1.4) blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:calc(env(safe-area-inset-top) + 12px) 18px 11px;
+  }
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .wordmark{display:flex;align-items:baseline;gap:7px}
+  .wordmark b{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-weight:800;letter-spacing:-.04em;font-size:26px;line-height:1;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--coral);transform:translateY(-1px)}
+  .tagline{font-size:11.5px;color:var(--ink-soft);letter-spacing:.04em;margin-top:3px}
+  .icon-btn{
+    width:var(--tap);height:var(--tap);border:1px solid var(--line);background:var(--surface);
+    border-radius:12px;display:grid;place-items:center;cursor:pointer;color:var(--ink);
+  }
+  .icon-btn:active{transform:scale(.96)}
+  .icon-btn svg{width:20px;height:20px}
+
+  /* ---------- Views ---------- */
+  main{flex:1;padding:18px 16px 96px}
+  .view{display:none;animation:fade .25s ease both}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .eyebrow{
+    font-family:"Hanken Grotesk";font-weight:700;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--cobalt);
+  }
+  h1.screen{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;letter-spacing:-.035em;
+    font-size:30px;line-height:1.02;margin:4px 0 2px;
+  }
+  .sub{color:var(--ink-soft);font-size:14px;margin:0 0 18px}
+
+  /* ---------- Generator panel ---------- */
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;box-shadow:var(--shadow);margin-bottom:22px;
+  }
+  .field{margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  .label{font-weight:700;font-size:13px;margin-bottom:8px;display:block}
+  .select-wrap{position:relative}
+  select.product-pick{
+    -webkit-appearance:none;appearance:none;width:100%;
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;
+    padding:13px 40px 13px 14px;font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);
+  }
+  .select-wrap::after{content:"";position:absolute;right:16px;top:50%;width:8px;height:8px;
+    border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);
+    transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1px solid var(--line);background:var(--paper);color:var(--ink);
+    padding:9px 13px;border-radius:999px;font-size:13.5px;font-weight:600;cursor:pointer;
+    min-height:40px;display:inline-flex;align-items:center;gap:6px;
+  }
+  .chip[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+  .chip:active{transform:scale(.97)}
+
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+  .stepper button{width:46px;height:46px;border:0;background:transparent;font-size:22px;cursor:pointer;color:var(--ink);font-weight:600}
+  .stepper button:active{background:var(--coral-wash)}
+  .stepper span{min-width:54px;text-align:center;font-weight:700;font-size:16px}
+  .stepper .unit{font-size:11px;color:var(--ink-soft);font-weight:600;margin-left:-6px;padding-right:12px}
+
+  .btn-primary{
+    width:100%;border:0;cursor:pointer;
+    background:var(--coral);color:#fff;font-family:"Bricolage Grotesque",sans-serif;
+    font-weight:700;font-size:17px;letter-spacing:-.01em;
+    padding:16px;border-radius:14px;margin-top:4px;
+    box-shadow:0 8px 20px -10px rgba(255,74,40,.7);
+    display:flex;align-items:center;justify-content:center;gap:9px;
+  }
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-primary:disabled{opacity:.7;cursor:wait}
+  .btn-primary svg{width:18px;height:18px}
+
+  .btn-ghost{
+    width:100%;border:1px dashed var(--line);background:transparent;color:var(--cobalt);
+    font-weight:700;font-size:15px;padding:14px;border-radius:13px;cursor:pointer;
+  }
+  .btn-ghost:active{background:var(--cobalt-wash)}
+
+  /* ---------- Plan / cards ---------- */
+  .plan-head{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 12px}
+  .plan-head h2{font-family:"Bricolage Grotesque";font-weight:700;font-size:18px;letter-spacing:-.02em;margin:0}
+  .count-tag{font-size:12px;color:var(--ink-soft);font-weight:600}
+
+  .card{
+    position:relative;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px 16px 14px 20px;margin-bottom:14px;
+    box-shadow:var(--shadow);overflow:hidden;animation:pop .35s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--coral)}
+  .card.posted{opacity:.62}
+  .card.posted::before{background:var(--good)}
+
+  .card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+  .day-tag{font-family:"Hanken Grotesk";font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+  .pill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;letter-spacing:.02em}
+  .pill.platform{background:var(--cobalt);color:#fff}
+  .pill.format{background:var(--cobalt-wash);color:var(--cobalt)}
+  .pill.time{background:var(--coral-wash);color:var(--coral);margin-left:auto}
+
+  .hook{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:700;letter-spacing:-.02em;
+    font-size:21px;line-height:1.15;margin:2px 0 10px;
+  }
+  .caption{font-size:15px;white-space:pre-wrap;color:#2a261f;margin:0 0 11px}
+  .meta-line{font-size:13px;color:var(--ink-soft);margin:0 0 4px;display:flex;gap:7px}
+  .meta-line .k{font-weight:700;color:var(--cobalt);flex-shrink:0}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 13px}
+  .tag{font-size:12px;color:var(--cobalt);background:var(--cobalt-wash);padding:4px 9px;border-radius:7px;font-weight:500}
+
+  .actions{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+  .act{
+    flex:1;border:1px solid var(--line);background:var(--paper);border-radius:11px;
+    padding:11px 6px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink);
+    display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;
+  }
+  .act svg{width:16px;height:16px}
+  .act:active{transform:scale(.97)}
+  .act.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .act.done{background:var(--good);color:#fff;border-color:var(--good)}
+  .act.del{flex:0 0 46px;color:var(--coral)}
+
+  /* ---------- Empty / loading ---------- */
+  .empty{
+    text-align:center;padding:34px 22px;border:1px dashed var(--line);border-radius:var(--radius);
+    background:color-mix(in srgb,var(--surface) 60%, transparent);color:var(--ink-soft);
+  }
+  .empty .big{font-family:"Bricolage Grotesque";font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.02em;margin-bottom:6px}
+  .empty p{margin:0;font-size:14px}
+
+  .working{display:flex;align-items:center;gap:11px;padding:15px 16px;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;font-weight:600;font-size:14px}
+  .spin{width:18px;height:18px;border:2.5px solid var(--cobalt-wash);border-top-color:var(--cobalt);border-radius:50%;animation:rot .8s linear infinite;flex-shrink:0}
+  @keyframes rot{to{transform:rotate(360deg)}}
+
+  /* ---------- Products ---------- */
+  .prod{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .prod h3{font-family:"Bricolage Grotesque";font-weight:700;font-size:18px;letter-spacing:-.02em;margin:0 0 3px;display:flex;align-items:center;gap:8px}
+  .prod .type{font-size:12px;color:var(--cobalt);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .prod .desc{font-size:14px;color:var(--ink-soft);margin:8px 0 12px}
+  .prod-actions{display:flex;gap:8px}
+  .mini{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);min-height:42px}
+  .mini.warn{color:var(--coral)}
+  .mini:active{transform:scale(.97)}
+  .active-flag{font-size:10px;background:var(--coral);color:#fff;padding:3px 8px;border-radius:999px;font-weight:700;letter-spacing:.04em}
+
+  /* ---------- Ask Mara chat ---------- */
+  .chat-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+  .bubble{max-width:88%;padding:12px 14px;border-radius:16px;font-size:15px;line-height:1.45;white-space:pre-wrap}
+  .bubble.me{align-self:flex-end;background:var(--cobalt);color:#fff;border-bottom-right-radius:5px}
+  .bubble.mara{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px;box-shadow:var(--shadow)}
+  .bubble.mara .who{font-family:"Bricolage Grotesque";font-weight:700;font-size:12px;color:var(--coral);letter-spacing:.02em;margin-bottom:4px}
+  .ask-row{position:sticky;bottom:80px;display:flex;gap:8px;background:var(--paper);padding:6px 0}
+  .ask-row textarea{
+    flex:1;resize:none;border:1px solid var(--line);background:var(--surface);border-radius:14px;
+    padding:13px 14px;font-family:inherit;font-size:15px;color:var(--ink);max-height:120px;line-height:1.35;
+  }
+  .send{width:50px;border:0;background:var(--coral);color:#fff;border-radius:14px;cursor:pointer;display:grid;place-items:center;flex-shrink:0}
+  .send:disabled{opacity:.5}
+  .send svg{width:20px;height:20px}
+  .suggest{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .suggest button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 13px;font-size:13px;font-weight:600;color:var(--cobalt);cursor:pointer;text-align:left}
+
+  /* ---------- Tab bar ---------- */
+  .tabbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;
+    background:color-mix(in srgb,var(--surface) 92%, transparent);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    display:flex;max-width:560px;margin:0 auto;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .tab{flex:1;border:0;background:transparent;padding:9px 4px 8px;cursor:pointer;color:var(--ink-soft);
+    display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;letter-spacing:.02em}
+  .tab svg{width:23px;height:23px}
+  .tab[aria-selected="true"]{color:var(--coral)}
+
+  /* ---------- Sheets / modals ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(22,19,14,.42);z-index:40;opacity:0;pointer-events:none;transition:opacity .22s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:560px;margin:0 auto;
+    background:var(--surface);border-radius:22px 22px 0 0;border-top:1px solid var(--line);
+    padding:8px 18px calc(env(safe-area-inset-bottom) + 22px);
+    transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);
+    max-height:92dvh;overflow-y:auto;box-shadow:0 -20px 50px -20px rgba(22,19,14,.4);
+  }
+  .sheet.show{transform:translateY(0)}
+  .grab{width:38px;height:4px;border-radius:4px;background:var(--line);margin:6px auto 14px}
+  .sheet h2{font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:-.03em;font-size:23px;margin:0 0 4px}
+  .sheet .sheet-sub{color:var(--ink-soft);font-size:13.5px;margin:0 0 18px}
+  .inp{width:100%;border:1px solid var(--line);background:var(--paper);border-radius:12px;
+    padding:12px 14px;font-family:inherit;font-size:16px;color:var(--ink);margin-bottom:13px}
+  textarea.inp{resize:vertical;min-height:64px;line-height:1.4}
+  .inp::placeholder{color:#a99e8c}
+  .field-label{font-weight:700;font-size:13px;margin:0 0 6px}
+  .note{font-size:12px;color:var(--ink-soft);line-height:1.45;background:var(--cobalt-wash);
+    border-radius:11px;padding:11px 13px;margin:6px 0 16px}
+  .note b{color:var(--cobalt)}
+
+  /* ---------- Toast ---------- */
+  .toast{position:fixed;left:50%;bottom:104px;transform:translate(-50%,20px);z-index:80;
+    background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;
+    font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+  :focus-visible{outline:3px solid var(--cobalt);outline-offset:2px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="masthead">
+    <div class="mast-row">
+      <div>
+        <div class="wordmark"><b>MARA</b><span class="dot"></span></div>
+        <div class="tagline">YOUR AI MARKETING DIRECTOR</div>
+      </div>
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ STUDIO ============ -->
+    <section class="view active" id="view-studio">
+      <div class="eyebrow">The Studio</div>
+      <h1 class="screen">Plan your week</h1>
+      <p class="sub">Pick a product. I'll draft scroll-stopping posts ready to send.</p>
+
+      <div class="panel">
+        <div class="field">
+          <label class="label" for="productSelect">Promoting</label>
+          <div class="select-wrap">
+            <select class="product-pick" id="productSelect"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Channels</label>
+          <div class="chips" id="channelChips">
+            <button class="chip" data-ch="Pinterest" aria-pressed="true">Pinterest</button>
+            <button class="chip" data-ch="Instagram" aria-pressed="true">Instagram</button>
+            <button class="chip" data-ch="TikTok" aria-pressed="true">TikTok</button>
+            <button class="chip" data-ch="Facebook" aria-pressed="false">Facebook</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">How many posts</label>
+          <div class="stepper">
+            <button id="cntMinus" aria-label="Fewer posts">−</button>
+            <span id="cntVal">3</span><span class="unit">/ wk</span>
+            <button id="cntPlus" aria-label="More posts">+</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="generateBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5L13 3z"/></svg>
+          Draft my week
+        </button>
+      </div>
+
+      <div class="plan-head">
+        <h2>This week's plan</h2>
+        <span class="count-tag" id="planCount"></span>
+      </div>
+      <div id="workingSlot"></div>
+      <div id="planList"></div>
+    </section>
+
+    <!-- ============ PRODUCTS ============ -->
+    <section class="view" id="view-products">
+      <div class="eyebrow">Your shelf</div>
+      <h1 class="screen">Products</h1>
+      <p class="sub">Each product is a profile I market from. Add as many as you want.</p>
+      <div id="productList"></div>
+      <button class="btn-ghost" id="addProductBtn">+ Add a product</button>
+    </section>
+
+    <!-- ============ ASK MARA ============ -->
+    <section class="view" id="view-ask">
+      <div class="eyebrow">Strategy desk</div>
+      <h1 class="screen">Ask Mara</h1>
+      <p class="sub">Stuck on the selling part? Ask me anything — I'll keep it simple.</p>
+      <div class="suggest" id="suggestRow">
+        <button>How do I get my first sales on Etsy?</button>
+        <button>What should I post on Pinterest today?</button>
+        <button>Why isn't my shop getting traffic?</button>
+      </div>
+      <div class="chat-wrap" id="chatWrap"></div>
+      <div class="ask-row">
+        <textarea id="askInput" rows="1" placeholder="Ask about marketing, traffic, sales…"></textarea>
+        <button class="send" id="askSend" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar" role="tablist">
+    <button class="tab" data-view="studio" role="tab" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Studio
+    </button>
+    <button class="tab" data-view="products" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+      Products
+    </button>
+    <button class="tab" data-view="ask" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Ask Mara
+    </button>
+  </nav>
+</div>
+
+<!-- Product edit sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="productSheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <h2 id="sheetTitle">Add a product</h2>
+  <p class="sheet-sub">The more detail, the sharper your posts.</p>
+  <p class="field-label">Product name</p>
+  <input class="inp" id="f_name" placeholder="e.g. BellaruePrints">
+  <p class="field-label">What is it?</p>
+  <input class="inp" id="f_type" placeholder="e.g. Etsy digital downloads">
+  <p class="field-label">Describe it in a sentence</p>
+  <textarea class="inp" id="f_desc" placeholder="e.g. Print-ready sublimation & DTF designs for crafters"></textarea>
+  <p class="field-label">Style / themes</p>
+  <input class="inp" id="f_themes" placeholder="e.g. Coquette, western, mom life, bows">
+  <p class="field-label">Who buys it?</p>
+  <input class="inp" id="f_audience" placeholder="e.g. Crafters, tumbler makers, moms who sell">
+  <p class="field-label">Price</p>
+  <input class="inp" id="f_price" placeholder="e.g. $2–5 per design">
+  <p class="field-label">Shop / product link</p>
+  <input class="inp" id="f_link" placeholder="https://etsy.com/shop/...">
+  <p class="field-label">Top selling points</p>
+  <textarea class="inp" id="f_points" placeholder="e.g. Instant download, commercial use, on-trend"></textarea>
+  <button class="btn-primary" id="saveProductBtn" style="margin-top:6px">Save product</button>
+  <button class="btn-ghost" id="cancelProductBtn" style="margin-top:10px;border-style:solid;color:var(--ink-soft)">Cancel</button>
+</div>
+
+<!-- Settings sheet -->
+<div class="sheet" id="settingsSheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <h2>Settings</h2>
+  <p class="sheet-sub">Mara runs on Claude.</p>
+  <div class="note">
+    <b>Inside Claude:</b> Mara works right now — no key needed. <br><br>
+    <b>If you deploy this</b> to GitHub Pages or Netlify, paste your own Anthropic API key below so Mara keeps working outside Claude. Get one at console.anthropic.com.
+  </div>
+  <p class="field-label">Anthropic API key (optional)</p>
+  <input class="inp" id="f_apikey" type="password" placeholder="sk-ant-…" autocomplete="off">
+  <button class="btn-primary" id="saveSettingsBtn" style="margin-top:6px">Save</button>
+  <button class="btn-ghost" id="closeSettingsBtn" style="margin-top:10px;border-style:solid;color:var(--ink-soft)">Close</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   Mara — Marketing Studio
+   Single-file. In-memory state + best-effort localStorage.
+   AI: Claude (keyless inside Claude; optional user key for deploy)
+   ============================================================ */
+
+const STORE_KEY = "mara_studio_v1";
+
+const DEFAULT_STATE = {
+  products: [{
+    id: "bellarue",
+    name: "BellaruePrints",
+    type: "Etsy digital downloads",
+    desc: "Print-ready sublimation & DTF design files for crafters and small business owners — instant digital downloads.",
+    themes: "Coquette, western, mom life, bows, sassy quotes",
+    audience: "Crafters, tumbler & shirt makers, small-business owners, moms who make and sell",
+    price: "$2–5 per design",
+    link: "https://www.etsy.com/shop/BellaruePrints",
+    points: "Instant download, print-ready PNG, commercial use, on-trend designs, no minimums"
+  }],
+  activeProductId: "bellarue",
+  channels: { Pinterest:true, Instagram:true, TikTok:true, Facebook:false },
+  count: 3,
+  plan: [],
+  chat: [],
+  settings: { apiKey: "" }
+};
+
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){ return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), JSON.parse(raw)); }
+  }catch(e){ /* storage blocked (e.g. inside Claude preview) — run in memory */ }
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){ /* ignore */ }
+}
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid = () => Math.random().toString(36).slice(2,9);
+
+let toastTimer;
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+}
+function activeProduct(){ return state.products.find(p=>p.id===state.activeProductId) || state.products[0]; }
+
+/* ============================================================
+   Claude API wrapper
+   ============================================================ */
+async function callMara({system, messages, maxTokens=1000}){
+  const headers = { "Content-Type":"application/json" };
+  // Fold the persona into the first user message to match the documented API shape exactly.
+  let msgs = messages.map(m=>({role:m.role, content:m.content}));
+  if(system && msgs.length){
+    msgs[0] = { role: msgs[0].role, content: system + "\n\n---\n\n" + msgs[0].content };
+  }
+  const body = { model:"claude-sonnet-4-6", max_tokens:maxTokens, messages: msgs };
+  const key = (state.settings.apiKey||"").trim();
+  if(key){
+    headers["x-api-key"] = key;
+    headers["anthropic-version"] = "2023-06-01";
+    headers["anthropic-dangerous-direct-browser-access"] = "true";
+  }
+  let res, raw;
+  try{
+    res = await fetch("https://api.anthropic.com/v1/messages",{ method:"POST", headers, body:JSON.stringify(body) });
+    raw = await res.text();
+  }catch(netErr){
+    throw new Error("Network blocked — couldn't reach the AI. "+(netErr.message||""));
+  }
+  if(!res.ok){
+    let d=raw;
+    try{ const j=JSON.parse(raw); d=(j.error&&j.error.message)?j.error.message:raw; }catch(e){}
+    throw new Error("API "+res.status+": "+(d||"unknown").slice(0,200));
+  }
+  let data;
+  try{ data=JSON.parse(raw); }catch(e){ throw new Error("Unreadable reply: "+(raw||"").slice(0,200)); }
+  const out=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+  if(!out) throw new Error("Empty reply from the AI.");
+  return out;
+}
+function parseJSON(text){
+  let t = text.replace(/```json/gi,"").replace(/```/g,"").trim();
+  const a=t.indexOf("{"), b=t.lastIndexOf("}");
+  if(a!==-1&&b!==-1) t=t.slice(a,b+1);
+  return JSON.parse(t);
+}
+
+const MARA_SYSTEM =
+`You are Mara, an elite social-media marketing director who has driven millions of dollars of traffic to Etsy shops and small digital-product businesses. You specialize in turning makers who "hate marketing" into shops with steady organic sales. You know Instagram (Reels, carousels), TikTok, Pinterest (huge for Etsy — pins link directly to listings), and Facebook groups cold. You write hooks that physically stop the scroll. You know the "link in bio" constraint on Instagram, and that Pinterest and TikTok are the fastest organic traffic drivers for Etsy digital products. Everything you write is specific, native to its platform, and built to drive a click to the shop. Never generic, never corporate. You write the way top creators actually write: punchy, human, a little bold.`;
+
+/* ============================================================
+   Generate the week — one post per call (robust, progressive)
+   ============================================================ */
+const SCHEDULE = {
+  1:["Wednesday"],
+  2:["Tuesday","Friday"],
+  3:["Monday","Wednesday","Friday"],
+  4:["Monday","Wednesday","Friday","Sunday"],
+  5:["Monday","Tuesday","Thursday","Friday","Sunday"]
+};
+
+let generating=false;
+async function generateWeek(){
+  if(generating) return;
+  const chans = Object.keys(state.channels).filter(c=>state.channels[c]);
+  if(chans.length===0){ toast("Pick at least one channel."); return; }
+  const p = activeProduct();
+  const n = state.count;
+  const days = SCHEDULE[n] || SCHEDULE[3];
+
+  generating=true;
+  const btn=$("#generateBtn"); btn.disabled=true;
+  state.plan=[]; renderPlan();
+
+  const fresh=[];
+  for(let i=0;i<n;i++){
+    showWorking(`Drafting post ${i+1} of ${n}…`);
+    const already = fresh.map(a=>`• ${a.platform}/${a.format}: ${a.hook}`).join("\n");
+    const user =
+`Product to promote:
+- Name: ${p.name}
+- What it is: ${p.type} — ${p.desc}
+- Style/themes: ${p.themes}
+- Who buys it: ${p.audience}
+- Price: ${p.price}
+- Shop link: ${p.link}
+- Selling points: ${p.points}
+
+Channels available this week: ${chans.join(", ")}.
+Suggested day for this post: ${days[i]}.
+
+Write social post ${i+1} of ${n} for this week.${already?`\n\nAlready planned this week — make THIS one clearly different (different platform/format/angle, no repeats):\n${already}`:""}
+
+Rules:
+- Choose the single best platform + format for this post from the available channels. Rotate across the week.
+- The hook must stop the scroll on the first line — specific and human, not "Check out these designs."
+- Keep the caption tight: 2–4 short lines, native to the platform.
+- Drive the click. Pinterest/TikTok can point more directly; Instagram uses "link in bio." Write the CTA to fit.
+- Hashtags: platform-appropriate count, mixing niche + reach.
+
+Return ONLY valid JSON, no markdown, no commentary, exactly:
+{"platform":"","format":"","hook":"","caption":"","hashtags":["#"],"cta":"","visual":"one line describing the image/video to make","best_time":"e.g. 8–10 PM"}`;
+
+    try{
+      const txt = await callMara({ system:MARA_SYSTEM, messages:[{role:"user",content:user}], maxTokens:1000 });
+      const post = parseJSON(txt);
+      post.id = uid();
+      post.day = days[i];
+      post.posted = false;
+      if(!Array.isArray(post.hashtags)) post.hashtags = String(post.hashtags||"").split(/\s+/).filter(Boolean);
+      fresh.push(post);
+      state.plan = fresh.slice();
+      renderPlan();
+    }catch(err){
+      generating=false; btn.disabled=false;
+      showError(err.message||"Something went wrong.");
+      return;
+    }
+  }
+  clearWorking();
+  saveState();
+  generating=false; btn.disabled=false;
+  toast(`${fresh.length} posts ready 🔥`);
+}
+
+function showWorking(msg){
+  $("#workingSlot").innerHTML = `<div class="working"><div class="spin"></div>${esc(msg)}</div>`;
+}
+function clearWorking(){ $("#workingSlot").innerHTML=""; }
+function showError(msg){
+  $("#workingSlot").innerHTML =
+    `<div class="working" style="display:block;background:var(--coral-wash);border-color:#f0b8aa;color:#7a2c1a">
+       <div style="font-weight:700;font-size:14px;margin-bottom:5px">Mara hit a snag</div>
+       <div style="font-size:13px;line-height:1.45;word-break:break-word">${esc(msg)}</div>
+       <button class="mini" id="retryGen" style="margin-top:11px">Try again</button>
+     </div>`;
+  const r=$("#retryGen"); if(r) r.addEventListener("click",()=>{ clearWorking(); generateWeek(); });
+}
+
+/* ============================================================
+   Render: plan cards
+   ============================================================ */
+function renderPlan(){
+  const list=$("#planList");
+  const c=$("#planCount");
+  if(!state.plan.length){
+    c.textContent="";
+    list.innerHTML = `<div class="empty"><div class="big">No plan yet</div><p>Pick a product above and tap <b>Draft my week</b>. I'll hand you a week of posts.</p></div>`;
+    return;
+  }
+  c.textContent = state.plan.length+" posts";
+  list.innerHTML = state.plan.map(post=>cardHTML(post)).join("");
+}
+
+function cardHTML(post){
+  const tags=(post.hashtags||[]).map(t=>`<span class="tag">${esc(t.startsWith("#")?t:"#"+t)}</span>`).join("");
+  return `
+  <div class="card ${post.posted?"posted":""}" id="card-${post.id}">
+    <div class="card-top">
+      <span class="day-tag">${esc(post.day||"")}</span>
+      <span class="pill platform">${esc(post.platform||"")}</span>
+      ${post.format?`<span class="pill format">${esc(post.format)}</span>`:""}
+      ${post.best_time?`<span class="pill time">${esc(post.best_time)}</span>`:""}
+    </div>
+    <div class="hook">${esc(post.hook||"")}</div>
+    <div class="caption">${esc(post.caption||"")}</div>
+    ${post.cta?`<div class="meta-line"><span class="k">CTA</span><span>${esc(post.cta)}</span></div>`:""}
+    ${post.visual?`<div class="meta-line"><span class="k">Visual</span><span>${esc(post.visual)}</span></div>`:""}
+    ${tags?`<div class="tags">${tags}</div>`:""}
+    <div class="actions">
+      <button class="act primary" data-share="${post.id}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </button>
+      <button class="act" data-copy="${post.id}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+      <button class="act ${post.posted?"done":""}" data-posted="${post.id}">
+        ${post.posted?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Posted':"Mark posted"}
+      </button>
+      <button class="act del" data-del="${post.id}" aria-label="Delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+function postText(post){
+  const tags=(post.hashtags||[]).map(t=>t.startsWith("#")?t:"#"+t).join(" ");
+  const link = activeProduct().link || "";
+  return `${post.hook}\n\n${post.caption}\n\n${post.cta||""}\n${link}\n\n${tags}`.trim();
+}
+
+/* plan action delegation */
+$("#planList").addEventListener("click", async (e)=>{
+  const share=e.target.closest("[data-share]");
+  const copy=e.target.closest("[data-copy]");
+  const posted=e.target.closest("[data-posted]");
+  const del=e.target.closest("[data-del]");
+  if(share){ const p=state.plan.find(x=>x.id===share.dataset.share); await sharePost(p); }
+  if(copy){ const p=state.plan.find(x=>x.id===copy.dataset.copy); await copyPost(p); }
+  if(posted){ const p=state.plan.find(x=>x.id===posted.dataset.posted); p.posted=!p.posted; saveState(); renderPlan(); }
+  if(del){ state.plan=state.plan.filter(x=>x.id!==del.dataset.del); saveState(); renderPlan(); }
+});
+
+async function sharePost(post){
+  const text=postText(post);
+  if(navigator.share){
+    try{ await navigator.share({ text }); return; }catch(e){ if(e.name==="AbortError") return; }
+  }
+  await copyToClipboard(text); toast("Copied — paste it into your post");
+}
+async function copyPost(post){ await copyToClipboard(postText(post)); toast("Caption copied"); }
+async function copyToClipboard(text){
+  try{ await navigator.clipboard.writeText(text); }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta);
+  }
+}
+
+/* ============================================================
+   Products
+   ============================================================ */
+function renderProducts(){
+  const list=$("#productList");
+  list.innerHTML = state.products.map(p=>{
+    const isActive=p.id===state.activeProductId;
+    return `<div class="prod">
+      <h3>${esc(p.name)} ${isActive?'<span class="active-flag">ACTIVE</span>':""}</h3>
+      <div class="type">${esc(p.type||"")}</div>
+      <div class="desc">${esc(p.desc||"")}</div>
+      <div class="prod-actions">
+        ${isActive?"":`<button class="mini" data-use="${p.id}">Use this</button>`}
+        <button class="mini" data-edit="${p.id}">Edit</button>
+        ${state.products.length>1?`<button class="mini warn" data-remove="${p.id}">Remove</button>`:""}
+      </div>
+    </div>`;
+  }).join("");
+  // refresh studio dropdown
+  const sel=$("#productSelect");
+  sel.innerHTML = state.products.map(p=>`<option value="${p.id}" ${p.id===state.activeProductId?"selected":""}>${esc(p.name)}</option>`).join("");
+}
+
+$("#productList").addEventListener("click",(e)=>{
+  const use=e.target.closest("[data-use]");
+  const edit=e.target.closest("[data-edit]");
+  const rem=e.target.closest("[data-remove]");
+  if(use){ state.activeProductId=use.dataset.use; saveState(); renderProducts(); toast("Active product set"); }
+  if(edit){ openProductSheet(edit.dataset.edit); }
+  if(rem){
+    state.products=state.products.filter(p=>p.id!==rem.dataset.remove);
+    if(state.activeProductId===rem.dataset.remove) state.activeProductId=state.products[0].id;
+    saveState(); renderProducts();
+  }
+});
+
+let editingId=null;
+function openProductSheet(id){
+  editingId=id||null;
+  const p = id ? state.products.find(x=>x.id===id) : null;
+  $("#sheetTitle").textContent = p ? "Edit product" : "Add a product";
+  $("#f_name").value=p?p.name:""; $("#f_type").value=p?p.type:"";
+  $("#f_desc").value=p?p.desc:""; $("#f_themes").value=p?p.themes:"";
+  $("#f_audience").value=p?p.audience:""; $("#f_price").value=p?p.price:"";
+  $("#f_link").value=p?p.link:""; $("#f_points").value=p?p.points:"";
+  openSheet("#productSheet");
+}
+$("#saveProductBtn").addEventListener("click",()=>{
+  const name=$("#f_name").value.trim();
+  if(!name){ toast("Give it a name first"); return; }
+  const data={
+    name, type:$("#f_type").value.trim(), desc:$("#f_desc").value.trim(),
+    themes:$("#f_themes").value.trim(), audience:$("#f_audience").value.trim(),
+    price:$("#f_price").value.trim(), link:$("#f_link").value.trim(), points:$("#f_points").value.trim()
+  };
+  if(editingId){
+    Object.assign(state.products.find(p=>p.id===editingId), data);
+  }else{
+    const id=uid(); state.products.push(Object.assign({id},data)); state.activeProductId=id;
+  }
+  saveState(); renderProducts(); closeSheets(); toast("Saved");
+});
+$("#addProductBtn").addEventListener("click",()=>openProductSheet(null));
+$("#cancelProductBtn").addEventListener("click",closeSheets);
+
+/* ============================================================
+   Ask Mara (chat)
+   ============================================================ */
+function renderChat(){
+  const w=$("#chatWrap");
+  w.innerHTML = state.chat.map(m=>
+    m.role==="user"
+      ? `<div class="bubble me">${esc(m.content)}</div>`
+      : `<div class="bubble mara"><div class="who">Mara</div>${esc(m.content)}</div>`
+  ).join("");
+  $("#suggestRow").style.display = state.chat.length ? "none" : "flex";
+  w.scrollIntoView({block:"end"});
+  window.scrollTo(0,document.body.scrollHeight);
+}
+let asking=false;
+async function askMara(text){
+  if(asking||!text.trim()) return;
+  asking=true;
+  state.chat.push({role:"user",content:text.trim()});
+  renderChat();
+  $("#askInput").value=""; autoGrow($("#askInput"));
+  state.chat.push({role:"assistant",content:"…"});
+  renderChat();
+
+  const sys = MARA_SYSTEM + ` You are chatting with the shop owner, who is a talented builder but new to marketing. Give direct, specific, actionable advice — no corporate fluff, no long preamble. Short paragraphs or tight bullet lists. Reference their products when useful. Always end with ONE concrete thing they can do today. Context — their products: ` +
+    state.products.map(p=>`${p.name} (${p.type}): ${p.desc} | themes: ${p.themes} | audience: ${p.audience}`).join(" || ");
+
+  const history = state.chat.filter(m=>m.content!=="…").map(m=>({role:m.role,content:m.content}));
+  try{
+    const reply = await callMara({ system:sys, messages:history, maxTokens:1000 });
+    state.chat[state.chat.length-1].content = reply || "Hmm, I didn't catch that — try again?";
+  }catch(err){
+    state.chat[state.chat.length-1].content = err.message || "Couldn't reach me just now. Try again in a sec.";
+  }
+  saveState(); renderChat(); asking=false;
+}
+$("#askSend").addEventListener("click",()=>askMara($("#askInput").value));
+$("#askInput").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); askMara($("#askInput").value); }
+});
+$("#askInput").addEventListener("input",e=>autoGrow(e.target));
+$("#suggestRow").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) askMara(b.textContent); });
+function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,120)+"px"; }
+
+/* ============================================================
+   Studio controls
+   ============================================================ */
+$("#productSelect").addEventListener("change",e=>{ state.activeProductId=e.target.value; saveState(); renderProducts(); });
+$("#channelChips").addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  const ch=b.dataset.ch; state.channels[ch]=!state.channels[ch];
+  b.setAttribute("aria-pressed", state.channels[ch]?"true":"false"); saveState();
+});
+$("#cntMinus").addEventListener("click",()=>{ state.count=Math.max(1,state.count-1); $("#cntVal").textContent=state.count; saveState(); });
+$("#cntPlus").addEventListener("click",()=>{ state.count=Math.min(5,state.count+1); $("#cntVal").textContent=state.count; saveState(); });
+$("#generateBtn").addEventListener("click",generateWeek);
+
+/* ============================================================
+   Tabs + sheets + settings
+   ============================================================ */
+$$(".tab").forEach(t=>t.addEventListener("click",()=>{
+  $$(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
+  t.setAttribute("aria-selected","true");
+  $$(".view").forEach(v=>v.classList.remove("active"));
+  $("#view-"+t.dataset.view).classList.add("active");
+  window.scrollTo(0,0);
+}));
+
+function openSheet(sel){ $("#scrim").classList.add("show"); $(sel).classList.add("show"); }
+function closeSheets(){ $("#scrim").classList.remove("show"); $$(".sheet").forEach(s=>s.classList.remove("show")); }
+$("#scrim").addEventListener("click",closeSheets);
+
+$("#settingsBtn").addEventListener("click",()=>{ $("#f_apikey").value=state.settings.apiKey||""; openSheet("#settingsSheet"); });
+$("#saveSettingsBtn").addEventListener("click",()=>{ state.settings.apiKey=$("#f_apikey").value.trim(); saveState(); closeSheets(); toast("Settings saved"); });
+$("#closeSettingsBtn").addEventListener("click",closeSheets);
+
+/* ============================================================
+   Boot
+   ============================================================ */
+function boot(){
+  // restore controls
+  $("#cntVal").textContent=state.count;
+  $$("#channelChips .chip").forEach(c=>c.setAttribute("aria-pressed", state.channels[c.dataset.ch]?"true":"false"));
+  renderProducts();
+  renderPlan();
+  renderChat();
+}
+boot();
+</script>
+</body>
+</html>
